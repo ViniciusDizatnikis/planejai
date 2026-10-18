@@ -6,6 +6,58 @@ Tudo funciona diretamente no navegador: sem backend, sem banco de dados remoto. 
 
 ---
 
+## 🚀 Minha entrega
+
+### Como executar
+
+```bash
+pnpm install
+# crie um arquivo .env na raiz com a sua chave do Gemini:
+# VITE_GEMINI_API_KEY=sua_chave_aqui
+pnpm dev
+```
+
+### Tecnologias
+
+React 19 · TypeScript · Vite · Tailwind CSS 4 · React Router 7 · Lucide Icons · API do Google Gemini
+
+### Melhoria implementada: Histórico de Simulações
+
+O botão **Histórico** já aparecia no cabeçalho, mas a rota `/historico` só mostrava um título. Implementei a página completa:
+
+- Lista todas as simulações salvas, **da mais recente para a mais antiga**, em cards com meta, valor, prazo e economia mensal necessária;
+- Mostra o selo **"Com insight"** quando a IA já gerou o diagnóstico daquela simulação;
+- O botão **Ver resultado** reabre a simulação. Como o insight fica salvo no `localStorage`, ele aparece na hora, **sem nova chamada à API** (economiza cota do Gemini);
+- O botão de **lixeira** exclui a simulação (com confirmação);
+- Mostra um **estado vazio** com atalho para criar a primeira simulação.
+
+Arquivos alterados:
+
+| Arquivo | Mudança |
+| --- | --- |
+| `src/hooks/useSimulationStorage.tsx` | Novas funções `getAllSimulations()` e `deleteSimulation(id)` |
+| `src/pages/HistoryPage.tsx` | Nova página de histórico |
+| `src/router.tsx` | Rota `/historico` passa a renderizar `HistoryPage` |
+
+### Como testar o fluxo principal
+
+1. Rode `pnpm dev` e abra o app;
+2. Preencha o formulário em etapas e clique em **Gerar simulação**;
+3. Veja os cards de resultado e aguarde o diagnóstico da IA;
+4. Clique em **Histórico** no cabeçalho: a simulação aparece com o selo "Com insight";
+5. Clique em **Ver resultado**: o diagnóstico carrega instantaneamente, sem novo loading;
+6. Volte ao histórico e exclua a simulação pela lixeira. Com a lista vazia, aparece o estado vazio.
+
+### O que aprendi
+
+- Montar um formulário em etapas e persistir os dados no `localStorage`;
+- Estruturar um prompt para a IA devolver JSON e tipar a resposta com TypeScript;
+- Evitar chamadas duplicadas à API com `useRef` e as condições do `useEffect`;
+- Usar o `localStorage` como cache do insight, reaproveitado pelo histórico;
+- Reaproveitar componentes (`Button`, `PageHero`) e os tokens de tema claro/escuro.
+
+---
+
 ## Stacks do Projeto
 
 ### Dependências de produção
